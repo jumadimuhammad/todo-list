@@ -4,7 +4,7 @@ ul li.checked {
     text-decoration: line-through;
 }
 
-ul li:hover {
+ul#screen li:hover {
     cursor: pointer;
     color: rgb(253, 253, 253);
     background: rgb(180, 17, 17) !important;
