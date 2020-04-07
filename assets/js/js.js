@@ -1,6 +1,15 @@
+let cek = localStorage.getItem("isLogin");
+
+if (cek != "true") {
+    window.location.href = `${window.origin}/login.html`;
+}
+
 //Elements
+let userData = JSON.parse(localStorage.userLogin);
 let addButton = document.getElementById("add");
 let searchButton = document.getElementById("search");
+let logoutButton = document.getElementById('logoutButton')
+let userDisplay = document.getElementById("userDisplay")
 
 // Storage
 let get = () => {
@@ -14,6 +23,12 @@ let get = () => {
 
 let save = (list) => {
     localStorage.todos = JSON.stringify(list);
+};
+
+//Display
+let showUser = (myObject) => {
+    let name = myObject.name + " | "
+    userDisplay.innerText = `${name.toUpperCase()}`;
 };
 
 //Display
@@ -81,6 +96,7 @@ let search = (event) => {
 };
 
 //Initialization
+showUser(userData);
 showList();
 
 //Listeners
@@ -89,13 +105,15 @@ searchButton.addEventListener("click", search);
 
 // Menambahkan class checked pada li
 var list = document.querySelector("#screen");
-list.addEventListener(
-    "click",
-    function (event) {
-        if (event.target.tagName === "LI") {
-            event.target.classList.toggle("checked");
-        }
+list.addEventListener("click", function (event) {
+    if (event.target.tagName === "LI") {
+        event.target.classList.toggle("checked");
     }
-);
+});
 
+let logOut = () => {
+    localStorage.setItem("isLogin", false);
+    window.location.href = `${window.origin}/login.html`;
+};
 
+logOutButton.addEventListener("click", logOut);
