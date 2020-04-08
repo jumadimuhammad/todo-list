@@ -8,8 +8,9 @@ if (cek != "true") {
 let userData = JSON.parse(localStorage.userLogin);
 let addButton = document.getElementById("add");
 let searchButton = document.getElementById("search");
-let logoutButton = document.getElementById('logoutButton')
-let userDisplay = document.getElementById("userDisplay")
+let logoutButton = document.getElementById("logoutButton");
+let userDisplay = document.getElementById("userDisplay");
+let screen = document.getElementById("screen");
 
 // Storage
 let get = () => {
@@ -27,21 +28,20 @@ let save = (list) => {
 
 //Display
 let showUser = (myObject) => {
-    let name = myObject.name + " | "
+    let name = myObject.name + " | ";
     userDisplay.innerText = `${name.toUpperCase()}`;
 };
 
-//Display
 let showList = (list = get()) => {
-    let screen = document.getElementById("screen");
     if (list.length != 0) {
         screen.innerHTML = "";
-        for (let index = 0; index < list.length; index++) {
-            screen.innerHTML += `<li class="d-flex justify-content-between align-items-center bg-light p-2">
-                <span>${list[index]}</span>
-                <span> <i <i id="edit-${index}" class="fa fa-pencil btn-sm btn-warning" aria-hidden="true" aria-hidden="true" onclick="editButton(this)"></i>
-                <i id="del-${index}" class="fa fa-trash btn-danger btn-sm" aria-hidden="true" onclick="deleteButton(this)"></i></span></li>`;
-        }
+        list.forEach((list) => {
+            let temp = list.replace(/[\s]/g, "");
+            screen.innerHTML += `<li id="index" class="d-flex justify-content-between align-items-center bg-light p-1">
+            <span>${list}</span>
+            <span> <i <i id="edit-${temp}" class="fa fa-pencil btn-sm btn-warning" aria-hidden="true" aria-hidden="true" onclick="editButton(this)"></i>
+            <i id="del-${temp}" class="fa fa-trash btn-danger btn-sm" aria-hidden="true" onclick="deleteButton(this)"></i></span></li>`;
+        });
     }
 };
 
@@ -61,7 +61,14 @@ let add = (event) => {
 
 let editButton = (temp) => {
     let todos = get();
-    const id = temp.id.replace("edit-", "");
+    let element = temp.id.replace("edit-", "");
+    let id = 0;
+    for (let i = 0; i < todos.length; i++) {
+        let compare = todos[i].replace(/[\s]/g, "");
+        if (element == compare) {
+            id = i;
+        }
+    }
     const text = prompt(`update ${todos[id]}:`);
 
     if (text) {
@@ -75,7 +82,16 @@ let editButton = (temp) => {
 
 let deleteButton = (temp) => {
     let todos = get();
-    let id = temp.id.replace("del-", "");
+    let element = temp.id.replace("del-", "");
+    let id = 0;
+
+    todos.forEach((todo, i) => {
+        let compare = todo.replace(/[\s]/g, "");
+        if (element == compare) {
+            id = i;
+        }
+    });
+
     todos.splice(id, 1);
     save(todos);
     showList();
@@ -84,24 +100,24 @@ let deleteButton = (temp) => {
 let search = (event) => {
     event.preventDefault();
     let todos = get();
+    let filtered = [];
     let inputSearch = document.getElementById("searchForm").value.toLowerCase();
-    const filtered = todos.filter((todo) =>
-        todo.toLowerCase().includes(inputSearch)
-    );
-    console.log(filtered);
+
+    todos.forEach((todo) => {
+        if (inputSearch == todo) {
+            filtered.push(inputSearch);
+        }
+    });
 
     if (filtered.length > 0) {
         showList(filtered);
-    } else alert("Item not found");
+        document.getElementById("searchForm").value = "";
+    } else {
+        alert("Item not found");
+        document.getElementById("searchForm").value = "";
+        showList(todos);
+    }
 };
-
-//Initialization
-showUser(userData);
-showList();
-
-//Listeners
-addButton.addEventListener("click", add);
-searchButton.addEventListener("click", search);
 
 // Menambahkan class checked pada li
 var list = document.querySelector("#screen");
@@ -116,4 +132,11 @@ let logOut = () => {
     window.location.href = `${window.origin}/login.html`;
 };
 
+//Initialization
+showUser(userData);
+showList();
+
+//Listeners
+addButton.addEventListener("click", add);
+searchButton.addEventListener("click", search);
 logOutButton.addEventListener("click", logOut);
