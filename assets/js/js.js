@@ -33,7 +33,7 @@ let showUser = (myObject) => {
 };
 
 let showList = (list = get()) => {
-    if (list.length != 0) {
+    if (list) {
         screen.innerHTML = "";
         list.forEach((list) => {
             let temp = list.replace(/[\s]/g, "");
